@@ -40,6 +40,11 @@
              (:user/name :as "name")
              {(:user/address :as "address")
               [:address/street]}]))
+    (is (= (-> query
+               eql/query->ast
+               eqld/ast->query
+               eqld/query->ast)
+           (eql/query->ast query)))
     (is (=
           (d/pull db-after (-> query
                                eql/query->ast
