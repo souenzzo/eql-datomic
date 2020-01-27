@@ -19,6 +19,7 @@ Turn datomic pull into a EQL query
 (-> `[(:user/name :as "name")]
     eqld/query->ast
     eql/ast->query)
+;; => [(:user/name {:as "name"})]
 ```
 
 Turn a EQL Query into datomic pull
@@ -30,4 +31,5 @@ Turn a EQL Query into datomic pull
 (-> `[(:user/name {:as "name"})]
     eql/query->ast
     eqld/ast->query)
+;; => [(:user/name :as "name")]
 ```
