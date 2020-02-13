@@ -4,7 +4,6 @@
             [datomic.api :as d]
             [edn-query-language.core :as eql]))
 
-
 (deftest eql-datomic
   (let [db-uri (doto "datomic:mem://test-db"
                  (d/create-database))
@@ -54,3 +53,17 @@
            "name"    "Alex"
            :user/id  1N}))
     (d/delete-database db-uri)))
+
+(deftest recursive-query
+  (let [query '[{:foo ...}]]
+    (is (= (eql/query->ast query)
+           (eqld/query->ast query)))
+    (is (= query
+           (eqld/ast->query (eqld/query->ast query))))))
+
+
+(deftest union-query
+  (let [query [{:foo {:a [:a]
+                      :b [:b]}}]]
+    (is (= [{:foo [:a :b]}]
+           (eqld/ast->query (eql/query->ast query))))))
