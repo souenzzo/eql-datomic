@@ -21,25 +21,27 @@
 
 (defn- el->node
   [el]
-  (cond
-    (map? el) (let [[el children] (first el)
-                    ast (when (coll? children)
-                          (query->ast children))]
-                (cond-> (assoc (el->node el)
-                          :type :join
-                          :query (if ast
-                                   (eql/ast->query ast)
-                                   children))
-                        ast (assoc :children (:children ast))))
-    (coll? el) {:type         :prop
-                :dispatch-key (first el)
-                :key          (first el)
-                :params       (apply hash-map (rest el))}
-    (keyword? el) {:type         :prop
-                   :dispatch-key el
-                   :key          el}
-    :else {:dispatch-key el
-           :key          el}))
+  (let [meta-value (meta el)]
+    (cond
+      (map? el) (let [[el children] (first el)
+                      ast (when (coll? children)
+                            (query->ast children))]
+                  (cond-> (assoc (el->node el)
+                            :type :join
+                            :query (if ast
+                                     (eql/ast->query ast)
+                                     children))
+                          ast (assoc :children (:children ast))
+                          meta-value (assoc :meta meta-value)))
+      (coll? el) (cond-> (assoc (el->node (first el))
+                           :params (apply hash-map (rest el)))
+                         meta-value (assoc :meta meta-value))
+      (keyword? el) (cond-> {:type         :prop
+                             :dispatch-key el
+                             :key          el}
+                            meta-value (assoc :meta meta-value))
+      :else {:dispatch-key el
+             :key          el})))
 
 (defn query->ast
   [query]

@@ -49,7 +49,7 @@
                                eql/query->ast
                                eqld/ast->query)
                   [:user/id 1])
-          {"address" #:address{:street "Atlantica"}
+          {"address" {:address/street "Atlantica"}
            "name"    "Alex"
            :user/id  1N}))
     (d/delete-database db-uri)))
@@ -61,6 +61,35 @@
     (is (= query
            (eqld/ast->query (eqld/query->ast query))))))
 
+
+(deftest join+params
+  (let [query '[({:foo-out [:bar-out]} :as :out)
+                {(:foo-in :as :in)
+                 [:bar-in]}]]
+    (is (= '[({:foo-out [:bar-out]}
+              {:as :out})
+             ({:foo-in [:bar-in]}
+              {:as :in})]
+           (eql/ast->query (eqld/query->ast query))))
+    (is (= '[{(:foo-out
+                :as
+                :out) [:bar-out]}
+             {(:foo-in
+                :as
+                :in) [:bar-in]}]
+           (eqld/ast->query (eqld/query->ast query))))))
+
+
+(deftest ast-metadata
+  (let [datomic-query '[(:foo :as :bar)]]
+    (is (= {:children [{:dispatch-key :foo
+                        :key          :foo
+                        :meta         {:column 25
+                                       :line   84}
+                        :params       {:as :bar}
+                        :type         :prop}]
+            :type     :root}
+           (eqld/query->ast datomic-query)))))
 
 (deftest union-query
   (let [query [{:foo {:a [:a]
