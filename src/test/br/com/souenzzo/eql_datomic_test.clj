@@ -96,3 +96,10 @@
                       :b [:b]}}]]
     (is (= [{:foo [:a :b]}]
            (eqld/ast->query (eql/query->ast query))))))
+
+(deftest many-join
+  (let [query [{:a [:join-a]
+                :b [:join-b]}]]
+    (is (= [{:a [:join-a]}
+            {:b [:join-b]}]
+           (eql/ast->query (eqld/query->ast query))))))
