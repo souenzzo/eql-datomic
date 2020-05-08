@@ -6,8 +6,8 @@ Same functions to connect datomic [pull syntax](https://docs.datomic.com/on-prem
 
 Add to your `deps.edn`
 ```clojure
-br.com.souenzzo/eql-datomic{:git/url "https://github.com/souenzzo/eql-datomic.git"
-                            :sha     "3b96d90b2dc3a6a46935d11a1dffb630a0287725"}
+br.com.souenzzo/eql-datomic {:git/url "https://github.com/souenzzo/eql-datomic.git"
+                             :sha     "92e3dc6aa1e85c50e219a6fd2d6603a590d0b2a0"}
 ```
 
 Turn datomic pull into a EQL query
