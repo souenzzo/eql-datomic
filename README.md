@@ -1,6 +1,6 @@
 # eql-datomic
 
-Same functions to connect datomic [pull syntax](https://docs.datomic.com/on-prem/pull.html) into/back from [EQL](http://edn-query-language.org).
+Some functions to connect datomic [pull syntax](https://docs.datomic.com/on-prem/pull.html) into/back from [EQL](http://edn-query-language.org).
 
 ## Usage
 
